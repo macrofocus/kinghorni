@@ -18,6 +18,8 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
+
+    implementation("black.ninia:jep:4.0.1")
 }
 
 tasks.withType<KotlinCompile> {
