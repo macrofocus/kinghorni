@@ -1,5 +1,3 @@
-// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -17,7 +15,6 @@ import jep.SharedInterpreter
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-
 @Composable
 @Preview
 fun App(simulator: Simulator) {
@@ -28,7 +25,7 @@ fun App(simulator: Simulator) {
             Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
                 Button(onClick = {
                     simulator.start()
-                }) {
+                }, enabled = false) {
                     Text("Start")
                 }
                 Button(onClick = {
@@ -38,7 +35,7 @@ fun App(simulator: Simulator) {
                 }
                 Button(onClick = {
                     simulator.stop()
-                }) {
+                }, enabled = false) {
                     Text("Stop")
                 }
             }
@@ -62,7 +59,7 @@ fun main() = application {
     Window(onCloseRequest = {
         interpreter.close()
         exitApplication()
-    }
+    }, title = "Simulator"
     ) {
         App(simulator)
     }
