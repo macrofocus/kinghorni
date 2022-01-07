@@ -20,36 +20,24 @@ import java.io.InputStreamReader
 
 @Composable
 @Preview
-fun App(simulator: Interpreter) {
+fun App(simulator: Simulator) {
     var count by remember { mutableStateOf(0L) }
 
     MaterialTheme {
         Column(Modifier.fillMaxSize(), Arrangement.spacedBy(5.dp)) {
             Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
                 Button(onClick = {
-                    simulator.apply {
-                        exec("step()")
-                        count = simulator.getValue("count") as Long
-                        println("Kotlin: Step ${count}")
-                    }
+                    simulator.start()
                 }) {
                     Text("Start")
                 }
                 Button(onClick = {
-                    simulator.apply {
-                        exec("step()")
-                        count = simulator.getValue("count") as Long
-                        println("Kotlin: Step ${count}")
-                    }
+                    simulator.step()
                 }) {
                     Text("Step")
                 }
                 Button(onClick = {
-                    simulator.apply {
-                        exec("step()")
-                        count = simulator.getValue("count") as Long
-                        println("Kotlin: Step ${count}")
-                    }
+                    simulator.stop()
                 }) {
                     Text("Stop")
                 }
@@ -69,19 +57,15 @@ fun main() = application {
         runScript("src/main/python/Simulator.py")
     }
 
+    val simulator = Simulator(interpreter)
+
     Window(onCloseRequest = {
         interpreter.close()
         exitApplication()
     }
     ) {
-        App(interpreter)
+        App(simulator)
     }
-}
-
-fun jepTest() {
-    val interp: Interpreter = SharedInterpreter()
-    interp.exec("print('hello world')")
-    interp.close()
 }
 
 private fun configureJep() {
