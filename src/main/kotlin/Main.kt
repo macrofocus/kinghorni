@@ -1,10 +1,13 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import jep.Interpreter
@@ -17,14 +20,43 @@ import java.io.InputStreamReader
 
 @Composable
 @Preview
-fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
+fun App(simulator: Interpreter) {
+    var count by remember { mutableStateOf(0L) }
 
     MaterialTheme {
-        Button(onClick = {
-            text = "Hello, Desktop!"
-        }) {
-            Text(text)
+        Column(Modifier.fillMaxSize(), Arrangement.spacedBy(5.dp)) {
+            Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
+                Button(onClick = {
+                    simulator.apply {
+                        exec("step()")
+                        count = simulator.getValue("count") as Long
+                        println("Kotlin: Step ${count}")
+                    }
+                }) {
+                    Text("Start")
+                }
+                Button(onClick = {
+                    simulator.apply {
+                        exec("step()")
+                        count = simulator.getValue("count") as Long
+                        println("Kotlin: Step ${count}")
+                    }
+                }) {
+                    Text("Step")
+                }
+                Button(onClick = {
+                    simulator.apply {
+                        exec("step()")
+                        count = simulator.getValue("count") as Long
+                        println("Kotlin: Step ${count}")
+                    }
+                }) {
+                    Text("Stop")
+                }
+            }
+            Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
+                Text("Step " + count)
+            }
         }
     }
 }
@@ -35,14 +67,14 @@ fun main() = application {
 
     val interpreter = SharedInterpreter().apply {
         runScript("src/main/python/Simulator.py")
-        exec("step()")
-        val count = getValue("count") as Long
-        println("Kotlin: Step ${count}")
     }
-    interpreter.close()
 
-    Window(onCloseRequest = ::exitApplication) {
-        App()
+    Window(onCloseRequest = {
+        interpreter.close()
+        exitApplication()
+    }
+    ) {
+        App(interpreter)
     }
 }
 
